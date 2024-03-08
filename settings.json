@@ -1,0 +1,9 @@
+{
+    "connectorId": "shared_certigna-20sign-5f7640695c612460d9-5f1704066cbf41f442",
+    "environment": "Default-82171a52-5d0b-41e2-981e-0f7325defbbd",
+    "apiProperties": "apiProperties.json",
+    "apiDefinition": "apiDefinition.swagger.json",
+    "icon": "icon.png",
+    "powerAppsUrl": "https://api.powerapps.com",
+    "powerAppsApiVersion": "2016-11-01"
+  }

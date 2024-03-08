@@ -1,0 +1,1967 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "Certigna Sign",
+    "description": "A digital signature solution offers robust authentication for electronic documents, ensuring both security and reliability. By utilizing unique digital signatures, it guarantees the integrity and authenticity of digital content. Users can confidently sign files, knowing that their digital signatures provide a secure and trustworthy authentication mechanism.",
+    "contact": {
+      "name": "Certigna Support Team",
+      "url": "http://www.certigna.com/support",
+      "email": "support@certigna.com"
+    },
+    "x-contact": {
+      "name": "Certigna Support Team",
+      "url": "http://www.certigna.com/support",
+      "email": "support@certigna.com"
+    },
+    "x-website": "http://www.certigna.com",
+    "x-privacy-policy": "http://www.certigna.com/privacy-policy"
+  },
+  "host": "localhost:8080",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/",
+  "consumes": [
+    "multipart/form-data"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/projects": {
+      "post": {
+        "operationId": "Step1",
+        "summary": "Step 1 - Upload a document to sign",
+        "description": "This operation initiates the project creation process by allowing a file to be uploaded to be signed as the first step.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "files",
+            "type": "file",
+            "description": "This parameter allows the user to upload the file(s) intended for signing.\n",
+            "required": true,
+            "x-ms-summary": "Upload files for signing"
+          },
+          {
+            "in": "formData",
+            "name": "name",
+            "type": "string",
+            "description": "Specifies the name of the project for which the file is being uploaded. The project name must be between 30 and 500 characters in length.\n",
+            "maxLength": 255,
+            "x-ms-summary": "Project name for file upload"
+          },
+          {
+            "in": "formData",
+            "name": "step",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "description": "Indicates the current step of the project creation process. By default, this is set to 1.\n",
+            "maxLength": 255,
+            "x-ms-summary": "Current step of project creation"
+          },
+          {
+            "in": "formData",
+            "name": "status",
+            "type": "string",
+            "description": "Represents the current status of the project. Possible values are 'Pending', 'Processing', or 'Completed'.\n",
+            "maxLength": 255,
+            "x-ms-summary": "Current status of the project",
+            "enum": [
+              "Pending",
+              "Processing",
+              "Completed"
+            ]
+          },
+          {
+            "in": "formData",
+            "name": "isMerge",
+            "type": "boolean",
+            "description": "This flag determines whether the uploaded files should be merged into one file or not.\n",
+            "x-ms-summary": "Flag to merge uploaded files"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has been processed successfully.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad request - Content-type application/json",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication is required to access the resource.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal server error - An unexpected error occurred on the server.",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Step 2, 3, and 4",
+        "operationId": "Step2-3-4",
+        "description": "The next steps after creating a project typically involve adding participants, adding a visible signature, and then sending the request.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int32",
+                  "title": "ID",
+                  "description": "Unique identifier for the project."
+                },
+                "step": {
+                  "type": "integer",
+                  "format": "int32",
+                  "title": "Step",
+                  "description": "Current step in the project creation process (2, 3, or 4)."
+                },
+                "name": {
+                  "type": "string",
+                  "maxLength": 255,
+                  "title": "Name",
+                  "description": "Name of the project."
+                },
+                "orderSign": {
+                  "type": "boolean",
+                  "title": "Order Sign",
+                  "description": "Indicates whether the signatures should follow a specific order."
+                },
+                "templateUuid": {
+                  "type": "string",
+                  "title": "Template universally unique identifier",
+                  "description": "Universally unique identifier of the project template."
+                },
+                "signatories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "firstName": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "title": "First Name",
+                        "description": "First name of the signatory."
+                      },
+                      "lastName": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "title": "Last Name",
+                        "description": "Last name of the signatory."
+                      },
+                      "role": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "title": "Role",
+                        "enum": [
+                          "signatory",
+                          "approval",
+                          "receipt",
+                          "viewer"
+                        ],
+                        "description": "Role of the signatory."
+                      },
+                      "email": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "title": "Email",
+                        "description": "Email address of the signatory."
+                      },
+                      "phone": {
+                        "type": "string",
+                        "title": "Phone",
+                        "description": "Phone number of the signatory."
+                      },
+                      "sortOrder": {
+                        "type": "integer",
+                        "title": "Sort Order",
+                        "description": "Sort order of the signatory."
+                      },
+                      "comment": {
+                        "type": "string",
+                        "title": "Comment",
+                        "description": "Comments related to the signatory."
+                      },
+                      "dateStatus": {
+                        "type": "string",
+                        "title": "Date Status",
+                        "description": "Status date of the signatory."
+                      },
+                      "sentDate": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Sent Date",
+                        "description": "Date when the invitation was sent to the signatory."
+                      },
+                      "invitationLink": {
+                        "type": "string",
+                        "title": "Invitation Link",
+                        "description": "Link for signatory invitation."
+                      },
+                      "mention": {
+                        "type": "string",
+                        "title": "Mention",
+                        "description": "Mention related to the signatory."
+                      },
+                      "invitationStatus": {
+                        "type": "string",
+                        "title": "Invitation Status",
+                        "description": "Invitation status for the signatory."
+                      },
+                      "documentStatus": {
+                        "type": "string",
+                        "title": "Document Status",
+                        "description": "Status of the document for the signatory."
+                      },
+                      "uuid": {
+                        "type": "string",
+                        "title": "Universally unique identifier",
+                        "description": "Universally unique identifier of the signatory."
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "title": "Created at",
+                        "description": "Date and time of signatory creation."
+                      },
+                      "modifiedAt": {
+                        "type": "string",
+                        "title": "Modified at",
+                        "description": "Date and time of signatory modification."
+                      }
+                    }
+                  },
+                  "description": "List of signatories for the project."
+                },
+                "documents": {
+                  "type": "array",
+                  "items": {},
+                  "title": "Documents",
+                  "description": "List of documents associated with the project."
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "titleInvitation": {
+                        "type": "string",
+                        "title": "Title Invitation",
+                        "description": "Title of the invitation."
+                      },
+                      "messageInvitation": {
+                        "type": "string",
+                        "title": "Message Invitation",
+                        "description": "Message of the invitation."
+                      },
+                      "type": {
+                        "type": "string",
+                        "title": "Type",
+                        "description": "Type of details."
+                      },
+                      "projectId": {
+                        "type": "integer",
+                        "format": "int32",
+                        "title": "Project ID",
+                        "description": "ID of the associated project."
+                      }
+                    }
+                  },
+                  "description": "Details related to the project."
+                },
+                "signatureLevel": {
+                  "type": "string",
+                  "maxLength": 30,
+                  "title": "Signature Level",
+                  "description": "Level of signature required (SIMPLE, ADVANCE, QUALIFY)."
+                },
+                "documentDetails": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "width": {
+                        "type": "number",
+                        "title": "Width",
+                        "description": "Width of the document."
+                      },
+                      "height": {
+                        "type": "number",
+                        "title": "Height",
+                        "description": "Height of the document."
+                      },
+                      "contentType": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "title": "Content Type",
+                        "description": "Content type of the document."
+                      },
+                      "fileName": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "title": "File Name",
+                        "description": "Name of the file."
+                      },
+                      "x": {
+                        "type": "number",
+                        "title": "X Coordinate",
+                        "description": "X coordinate."
+                      },
+                      "y": {
+                        "type": "number",
+                        "title": "Y Coordinate",
+                        "description": "Y coordinate."
+                      },
+                      "text": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "title": "Text",
+                        "description": "Text content (if applicable)."
+                      },
+                      "textAlign": {
+                        "type": "string",
+                        "title": "Text Alignment",
+                        "description": "Text alignment (if applicable)."
+                      },
+                      "fontSize": {
+                        "type": "number",
+                        "title": "Font Size",
+                        "description": "Font size (if applicable)."
+                      },
+                      "fontName": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "title": "Font Name",
+                        "description": "Font name (if applicable)."
+                      },
+                      "pageNum": {
+                        "type": "number",
+                        "title": "Page Number",
+                        "description": "Page number."
+                      },
+                      "type": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "title": "Type",
+                        "enum": [
+                          "Signatory",
+                          "Approval",
+                          "Paraph"
+                        ],
+                        "description": "Type of the document."
+                      },
+                      "documentId": {
+                        "type": "number",
+                        "title": "Document ID",
+                        "description": "ID of the document."
+                      },
+                      "signatoryId": {
+                        "type": "number",
+                        "title": "Signatory ID",
+                        "description": "ID of the associated signatory."
+                      }
+                    }
+                  },
+                  "title": "Document Details",
+                  "description": "Details of the documents associated with the project."
+                },
+                "autoReminder": {
+                  "type": "boolean",
+                  "title": "Auto Reminder",
+                  "description": "Indicates whether automatic reminders are enabled.",
+                  "enum": [
+                    true,
+                    false
+                  ]
+                },
+                "channelReminder": {
+                  "type": "integer",
+                  "maxLength": 255,
+                  "format": "int32",
+                  "title": "Channel Reminder",
+                  "description": "Channel for reminders (1, 2, or 3).",
+                  "enum": [
+                    1,
+                    2,
+                    3
+                  ]
+                },
+                "reminderOption": {
+                  "type": "integer",
+                  "title": "Reminder Option",
+                  "description": "Reminder option (1, 2, 3, or 4).",
+                  "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                  ]
+                },
+                "expireDate": {
+                  "type": "string",
+                  "title": "Expire Date",
+                  "description": "Expiration date for the project."
+                },
+                "setting": {
+                  "type": "object",
+                  "title": "Setting",
+                  "properties": {
+                    "companyUuid": {
+                      "type": "string",
+                      "maxLength": 255,
+                      "title": "Company UUID",
+                      "description": "UUID of the associated company."
+                    },
+                    "signatureLevel": {
+                      "type": "string",
+                      "maxLength": 30,
+                      "title": "Signature Level",
+                      "description": "Level of signature required at the company level."
+                    },
+                    "personalTerms": {
+                      "type": "string",
+                      "maxLength": 255,
+                      "title": "Personal Terms",
+                      "description": "Personal terms for the project."
+                    },
+                    "identityTerms": {
+                      "type": "string",
+                      "maxLength": 255,
+                      "title": "Identity Terms",
+                      "description": "Identity terms for the project."
+                    },
+                    "documentTerms": {
+                      "type": "string",
+                      "maxLength": 255,
+                      "title": "Document Terms",
+                      "description": "Document terms for the project."
+                    },
+                    "channelReminder": {
+                      "type": "string",
+                      "title": "Channel Reminder",
+                      "description": "Channel for reminders at the company level."
+                    },
+                    "fileType": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "jpg",
+                          "pdf",
+                          "png"
+                        ]
+                      },
+                      "title": "File Type",
+                      "description": "Allowed file types for the project."
+                    }
+                  },
+                  "description": "Settings related to the project."
+                }
+              },
+              "required": [
+                "step"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. Project has been Created.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "createdBy": {
+                  "type": "integer",
+                  "description": "ID of the user who created the project."
+                },
+                "id": {
+                  "type": "integer",
+                  "description": "Unique identifier for the project."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the project."
+                },
+                "documents": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Unique identifier for the document."
+                      },
+                      "fileName": {
+                        "type": "string",
+                        "description": "Name of the document file."
+                      },
+                      "signedDocUrl": {
+                        "type": "string",
+                        "description": "URL for the signed document, if available."
+                      },
+                      "editedFileName": {
+                        "type": "string",
+                        "description": "Edited file name, if applicable."
+                      },
+                      "originalFileName": {
+                        "type": "string",
+                        "description": "Original name of the document file."
+                      },
+                      "contentType": {
+                        "type": "string",
+                        "description": "MIME type of the document content."
+                      },
+                      "fullPath": {
+                        "type": "string",
+                        "description": "Full path of the document, if available."
+                      },
+                      "size": {
+                        "type": "integer",
+                        "description": "Size of the document in bytes."
+                      },
+                      "extension": {
+                        "type": "string",
+                        "description": "File extension of the document."
+                      },
+                      "projectId": {
+                        "type": "integer",
+                        "description": "ID of the project to which the document belongs."
+                      },
+                      "totalPages": {
+                        "type": "integer",
+                        "description": "Total number of pages in the document."
+                      },
+                      "documentDetails": {
+                        "type": "array",
+                        "description": "Details about the document, such as signatures.",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "description": "Unique identifier for the document detail."
+                            },
+                            "x": {
+                              "type": "number",
+                              "description": "X-coordinate of the detail."
+                            },
+                            "y": {
+                              "type": "number",
+                              "description": "Y-coordinate of the detail."
+                            },
+                            "width": {
+                              "type": "integer",
+                              "description": "Width of the detail."
+                            },
+                            "height": {
+                              "type": "integer",
+                              "description": "Height of the detail."
+                            },
+                            "pageNum": {
+                              "type": "integer",
+                              "description": "Page number of the detail."
+                            },
+                            "type": {
+                              "type": "string",
+                              "description": "Type of detail (e.g., Signatory)."
+                            },
+                            "contentType": {
+                              "type": "string",
+                              "description": "MIME type of the detail content."
+                            },
+                            "fileName": {
+                              "type": "string",
+                              "description": "Name of the file related to the detail."
+                            },
+                            "text": {
+                              "type": "string",
+                              "description": "Text content of the detail."
+                            },
+                            "textAlign": {
+                              "type": "string",
+                              "description": "Text alignment of the detail."
+                            },
+                            "fontSize": {
+                              "type": "integer",
+                              "description": "Font size of the detail text."
+                            },
+                            "fontName": {
+                              "type": "string",
+                              "description": "Font name of the detail text."
+                            },
+                            "documentId": {
+                              "type": "integer",
+                              "description": "ID of the document to which the detail belongs."
+                            },
+                            "signatoryId": {
+                              "type": "integer",
+                              "description": "ID of the signatory associated with the detail."
+                            }
+                          }
+                        }
+                      },
+                      "x": {
+                        "type": "number",
+                        "description": "X-coordinate of the document."
+                      },
+                      "y": {
+                        "type": "number",
+                        "description": "Y-coordinate of the document."
+                      },
+                      "width": {
+                        "type": "integer",
+                        "description": "Width of the document."
+                      },
+                      "height": {
+                        "type": "integer",
+                        "description": "Height of the document."
+                      },
+                      "pageNum": {
+                        "type": "integer",
+                        "description": "Page number of the document."
+                      },
+                      "type": {
+                        "type": "string",
+                        "description": "Type of the document."
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "Text content of the document."
+                      },
+                      "textAlign": {
+                        "type": "string",
+                        "description": "Text alignment of the document."
+                      },
+                      "fontSize": {
+                        "type": "integer",
+                        "description": "Font size of the document text."
+                      },
+                      "fontName": {
+                        "type": "string",
+                        "description": "Font name of the document text."
+                      },
+                      "documentId": {
+                        "type": "integer",
+                        "description": "ID of the document."
+                      },
+                      "signatoryId": {
+                        "type": "integer",
+                        "description": "ID of the signatory associated with the document."
+                      },
+                      "sortOrder": {
+                        "type": "integer",
+                        "description": "Sort order of the document."
+                      },
+                      "isMergedFile": {
+                        "type": "boolean",
+                        "description": "Indicates if the document is part of a merged file."
+                      },
+                      "mergedFile": {
+                        "type": "boolean",
+                        "description": "Indicates if the document is a merged file."
+                      }
+                    }
+                  }
+                },
+                "step": {
+                  "type": "integer",
+                  "description": "The current step of the project."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Type of the project (e.g., SIGNATURE_PROJECT)."
+                },
+                "signatureLevel": {
+                  "type": "string",
+                  "description": "Level of signature required (e.g., SIMPLE)."
+                },
+                "orderSign": {
+                  "type": "boolean",
+                  "description": "Indicates if there is an order for signing."
+                },
+                "orderApprove": {
+                  "type": "boolean",
+                  "description": "Indicates if there is an order for approval."
+                },
+                "templateId": {
+                  "type": "string",
+                  "description": "ID of the template, if applicable."
+                },
+                "templateName": {
+                  "type": "string",
+                  "description": "Name of the template, if applicable."
+                },
+                "autoReminder": {
+                  "type": "boolean",
+                  "description": "Indicates if automatic reminders are enabled."
+                },
+                "channelReminder": {
+                  "type": "string",
+                  "description": "Reminder channel information, if applicable."
+                },
+                "reminderOption": {
+                  "type": "integer",
+                  "description": "Reminder options, if applicable."
+                },
+                "assignedTo": {
+                  "type": "integer",
+                  "description": "ID of the assigned user, if applicable."
+                },
+                "flowId": {
+                  "type": "integer",
+                  "description": "ID of the flow, if applicable."
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Current status of the project."
+                },
+                "modifiedBy": {
+                  "type": "string",
+                  "description": "ID of the user who last modified the project."
+                },
+                "createdAt": {
+                  "type": "integer",
+                  "description": "Timestamp when the project was created."
+                },
+                "modifiedAt": {
+                  "type": "integer",
+                  "description": "Timestamp when the project was last modified."
+                },
+                "expireDate": {
+                  "type": "string",
+                  "description": "Expiry date of the project, if applicable."
+                },
+                "sftpZipFile": {
+                  "type": "string",
+                  "description": "SFTP zip file information, if applicable."
+                },
+                "campaignId": {
+                  "type": "integer",
+                  "description": "ID of the campaign, if applicable."
+                },
+                "countedStatuses": {
+                  "type": "integer",
+                  "description": "Counted statuses information, if applicable."
+                },
+                "annexDocuments": {
+                  "type": "array",
+                  "description": "Annex documents associated with the project.",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "signatories": {
+                  "type": "array",
+                  "description": "Signatories associated with the project.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Unique identifier for the signatory."
+                      },
+                      "firstName": {
+                        "type": "string",
+                        "description": "First name of the signatory."
+                      },
+                      "lastName": {
+                        "type": "string",
+                        "description": "Last name of the signatory."
+                      },
+                      "role": {
+                        "type": "string",
+                        "description": "Role of the signatory."
+                      },
+                      "email": {
+                        "type": "string",
+                        "description": "Email of the signatory."
+                      },
+                      "phone": {
+                        "type": "string",
+                        "description": "Phone number of the signatory."
+                      },
+                      "sortOrder": {
+                        "type": "integer",
+                        "description": "Sort order of the signatory."
+                      },
+                      "comment": {
+                        "type": "string",
+                        "description": "Comment associated with the signatory."
+                      },
+                      "dateStatus": {
+                        "type": "string",
+                        "description": "Date status of the signatory."
+                      },
+                      "sentDate": {
+                        "type": "string",
+                        "description": "Sent date of the signatory."
+                      },
+                      "invitationLink": {
+                        "type": "string",
+                        "description": "Invitation link for the signatory."
+                      },
+                      "mention": {
+                        "type": "string",
+                        "description": "Mention information for the signatory."
+                      },
+                      "invitationStatus": {
+                        "type": "string",
+                        "description": "Invitation status of the signatory."
+                      },
+                      "documentStatus": {
+                        "type": "string",
+                        "description": "Document status of the signatory."
+                      },
+                      "uuid": {
+                        "type": "integer",
+                        "description": "UUID of the signatory."
+                      },
+                      "createdAt": {
+                        "type": "integer",
+                        "description": "Timestamp when the signatory was created."
+                      },
+                      "modifiedAt": {
+                        "type": "string",
+                        "description": "Timestamp when the signatory was last modified."
+                      }
+                    }
+                  }
+                },
+                "details": {
+                  "type": "array",
+                  "description": "Additional details associated with the project.",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "histories": {
+                  "type": "array",
+                  "description": "Historical actions associated with the project.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Unique identifier for the history entry."
+                      },
+                      "dateStatus": {
+                        "type": "integer",
+                        "description": "Timestamp when the status change occurred."
+                      },
+                      "action": {
+                        "type": "string",
+                        "description": "Action performed (e.g., CREATED)."
+                      },
+                      "actionBy": {
+                        "type": "string",
+                        "description": "User who performed the action."
+                      },
+                      "sortOrder": {
+                        "type": "integer",
+                        "description": "Sort order of the history entry."
+                      }
+                    }
+                  }
+                },
+                "createdByUser": {
+                  "type": "object",
+                  "description": "Information about the user who created the project.",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Unique identifier for the user."
+                    },
+                    "userEntityId": {
+                      "type": "string",
+                      "description": "Entity ID of the user."
+                    },
+                    "firstName": {
+                      "type": "string",
+                      "description": "First name of the user."
+                    },
+                    "lastName": {
+                      "type": "string",
+                      "description": "Last name of the user."
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "Email of the user."
+                    },
+                    "phone": {
+                      "type": "string",
+                      "description": "Phone number of the user."
+                    },
+                    "createdBy": {
+                      "type": "integer",
+                      "description": "ID of the user who created the user."
+                    },
+                    "active": {
+                      "type": "boolean",
+                      "description": "Indicates if the user is active."
+                    }
+                  }
+                },
+                "manifestName": {
+                  "type": "string",
+                  "description": "Name of the manifest, if applicable."
+                },
+                "documentArchived": {
+                  "type": "boolean",
+                  "description": "Indicates if the document is archived."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Check the request payload for errors.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Unauthorized. Authentication required.",
+            "schema": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact the system administrator.",
+            "schema": {}
+          },
+          "default": {
+            "description": "Default response.",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}": {
+      "get": {
+        "summary": "Get document by identifier",
+        "description": "Returns the document file by its project identifier.",
+        "operationId": "GetDocumentById",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Projet identifier.",
+            "format": "int64",
+            "x-ms-summary": "Projet identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. Project has been created.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "createdBy": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "documents": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "fileName": {
+                        "type": "string"
+                      },
+                      "signedDocUrl": {
+                        "type": "string"
+                      },
+                      "editedFileName": {
+                        "type": "string"
+                      },
+                      "originalFileName": {
+                        "type": "string"
+                      },
+                      "contentType": {
+                        "type": "string"
+                      },
+                      "fullPath": {
+                        "type": "string"
+                      },
+                      "size": {
+                        "type": "integer"
+                      },
+                      "extension": {
+                        "type": "string"
+                      },
+                      "projectId": {
+                        "type": "integer"
+                      },
+                      "totalPages": {
+                        "type": "integer"
+                      },
+                      "documentDetails": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer"
+                            },
+                            "x": {
+                              "type": "number"
+                            },
+                            "y": {
+                              "type": "number"
+                            },
+                            "width": {
+                              "type": "integer"
+                            },
+                            "height": {
+                              "type": "integer"
+                            },
+                            "pageNum": {
+                              "type": "integer"
+                            },
+                            "type": {
+                              "type": "string"
+                            },
+                            "contentType": {
+                              "type": "string"
+                            },
+                            "fileName": {
+                              "type": "string"
+                            },
+                            "text": {
+                              "type": "string"
+                            },
+                            "textAlign": {
+                              "type": "string"
+                            },
+                            "fontSize": {
+                              "type": "integer"
+                            },
+                            "fontName": {
+                              "type": "string"
+                            },
+                            "documentId": {
+                              "type": "integer"
+                            },
+                            "signatoryId": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      },
+                      "isMergedFile": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                },
+                "step": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "signatureLevel": {
+                  "type": "string"
+                },
+                "orderSign": {
+                  "type": "boolean"
+                },
+                "orderApprove": {
+                  "type": "boolean"
+                },
+                "templateId": {
+                  "type": "integer"
+                },
+                "templateName": {
+                  "type": "string"
+                },
+                "autoReminder": {
+                  "type": "boolean"
+                },
+                "channelReminder": {
+                  "type": "integer"
+                },
+                "reminderOption": {
+                  "type": "string"
+                },
+                "assignedTo": {
+                  "type": "string"
+                },
+                "flowId": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "modifiedBy": {
+                  "type": "integer"
+                },
+                "createdAt": {
+                  "type": "integer"
+                },
+                "modifiedAt": {
+                  "type": "integer"
+                },
+                "expireDate": {
+                  "type": "integer"
+                },
+                "sftpZipFile": {
+                  "type": "string"
+                },
+                "campaignId": {
+                  "type": "string"
+                },
+                "countedStatuses": {
+                  "type": "string"
+                },
+                "annexDocuments": {
+                  "type": "array",
+                  "items": {}
+                },
+                "signatories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "firstName": {
+                        "type": "string"
+                      },
+                      "lastName": {
+                        "type": "string"
+                      },
+                      "role": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "phone": {
+                        "type": "string"
+                      },
+                      "sortOrder": {
+                        "type": "integer"
+                      },
+                      "comment": {
+                        "type": "string"
+                      },
+                      "dateStatus": {
+                        "type": "string"
+                      },
+                      "sentDate": {
+                        "type": "integer"
+                      },
+                      "invitationLink": {
+                        "type": "string"
+                      },
+                      "mention": {
+                        "type": "string"
+                      },
+                      "invitationStatus": {
+                        "type": "string"
+                      },
+                      "documentStatus": {
+                        "type": "string"
+                      },
+                      "uuid": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "integer"
+                      },
+                      "modifiedAt": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "titleInvitation": {
+                        "type": "string"
+                      },
+                      "messageInvitation": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "histories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "dateStatus": {
+                        "type": "integer"
+                      },
+                      "action": {
+                        "type": "string"
+                      },
+                      "actionBy": {
+                        "type": "string"
+                      },
+                      "sortOrder": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "createdByUser": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "userEntityId": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "manifestName": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Check the request payload for errors.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Unauthorized. Authentication required.",
+            "schema": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact the system administrator.",
+            "schema": {}
+          },
+          "default": {
+            "description": "Default response.",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/api/v1/projects/user": {
+      "get": {
+        "summary": "Get list of projects filtered",
+        "description": "Returns the list of projects with some filters.",
+        "operationId": "GetListProjects",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "description": "Index of the page.",
+            "format": "int64",
+            "x-ms-summary": "Index of the page"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "description": "Total items per page.",
+            "format": "int64",
+            "x-ms-summary": "Total items per page"
+          },
+          {
+            "name": "sortField",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Field to sort with.",
+            "x-ms-summary": "Field to sort with"
+          },
+          {
+            "name": "sortDirection",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "description": "Sort direction « asc » or « desc ».",
+            "x-ms-summary": "Sort direction"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Search project by name.",
+            "x-ms-summary": "Search project by name"
+          },
+          {
+            "name": "filterStep",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "default": 1,
+            "description": "Steps filter (1- upload document, 2- add participants , 3- add visible signature, 4- request to create a signature project).",
+            "format": "int64",
+            "x-ms-summary": "Steps filter "
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Project creation date, from “yyyy-MM-dd”.",
+            "format": "date",
+            "x-ms-summary": "Project creation date, from yyyy-MM-dd"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Project creation date, to “yyyy-MM-dd”.",
+            "format": "date",
+            "x-ms-summary": "Project creation date, to yyyy-MM-dd"
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Project status filter (IN_PROGRESS, COMPLETED,...).",
+            "enum": [
+              "IN_PROGRESS",
+              "COMPLETED"
+            ],
+            "x-ms-summary": "Project status filter"
+          },
+          {
+            "name": "filterBy",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "company",
+              "departement",
+              "user"
+            ],
+            "description": "Filter by company, by department or by user, list all projects related to each one of them.",
+            "x-ms-summary": "Filter by company, by department or by user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. Project have been Created.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "contents": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "createdBy": {
+                        "type": "integer"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "documents": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer"
+                            },
+                            "fileName": {
+                              "type": "string"
+                            },
+                            "signedDocUrl": {
+                              "type": "string"
+                            },
+                            "editedFileName": {
+                              "type": "string"
+                            },
+                            "originalFileName": {
+                              "type": "string"
+                            },
+                            "contentType": {
+                              "type": "string"
+                            },
+                            "fullPath": {
+                              "type": "string"
+                            },
+                            "size": {
+                              "type": "integer"
+                            },
+                            "extension": {
+                              "type": "string"
+                            },
+                            "projectId": {
+                              "type": "integer"
+                            },
+                            "totalPages": {
+                              "type": "integer"
+                            },
+                            "documentDetails": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "width": {
+                                    "type": "integer"
+                                  },
+                                  "height": {
+                                    "type": "integer"
+                                  },
+                                  "pageNum": {
+                                    "type": "integer"
+                                  },
+                                  "type": {
+                                    "type": "string"
+                                  },
+                                  "contentType": {
+                                    "type": "string"
+                                  },
+                                  "fileName": {
+                                    "type": "string"
+                                  },
+                                  "text": {
+                                    "type": "string"
+                                  },
+                                  "textAlign": {
+                                    "type": "string"
+                                  },
+                                  "fontSize": {
+                                    "type": "integer"
+                                  },
+                                  "fontName": {
+                                    "type": "string"
+                                  },
+                                  "documentId": {
+                                    "type": "integer"
+                                  },
+                                  "signatoryId": {
+                                    "type": "integer"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "step": {
+                        "type": "string"
+                      },
+                      "signatureLevel": {
+                        "type": "string"
+                      },
+                      "orderSign": {
+                        "type": "boolean"
+                      },
+                      "orderApprove": {
+                        "type": "boolean"
+                      },
+                      "templateId": {
+                        "type": "string"
+                      },
+                      "templateName": {
+                        "type": "string"
+                      },
+                      "autoReminder": {
+                        "type": "boolean"
+                      },
+                      "channelReminder": {
+                        "type": "integer"
+                      },
+                      "reminderOption": {
+                        "type": "string"
+                      },
+                      "assignedTo": {
+                        "type": "string"
+                      },
+                      "flowId": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "modifiedBy": {
+                        "type": "integer"
+                      },
+                      "createdAt": {
+                        "type": "integer"
+                      },
+                      "modifiedAt": {
+                        "type": "integer"
+                      },
+                      "expireDate": {
+                        "type": "integer"
+                      },
+                      "signatories": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer"
+                            },
+                            "firstName": {
+                              "type": "string"
+                            },
+                            "lastName": {
+                              "type": "string"
+                            },
+                            "role": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "phone": {
+                              "type": "string"
+                            },
+                            "sortOrder": {
+                              "type": "integer"
+                            },
+                            "comment": {
+                              "type": "string"
+                            },
+                            "dateStatus": {
+                              "type": "string"
+                            },
+                            "sentDate": {
+                              "type": "integer"
+                            },
+                            "invitationStatus": {
+                              "type": "string"
+                            },
+                            "documentStatus": {
+                              "type": "string"
+                            },
+                            "uuid": {
+                              "type": "string"
+                            },
+                            "createdAt": {
+                              "type": "integer"
+                            },
+                            "modifiedAt": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      },
+                      "details": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer"
+                            },
+                            "type": {
+                              "type": "string"
+                            },
+                            "titleInvitation": {
+                              "type": "string"
+                            },
+                            "messageInvitation": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "histories": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer"
+                            },
+                            "dateStatus": {
+                              "type": "integer"
+                            },
+                            "action": {
+                              "type": "string"
+                            },
+                            "actionBy": {
+                              "type": "string"
+                            },
+                            "sortOrder": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      },
+                      "createdByUser": {
+                        "type": "string"
+                      },
+                      "manifestName": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "pageSize": {
+                  "type": "integer"
+                },
+                "totalPages": {
+                  "type": "integer"
+                },
+                "total": {
+                  "type": "integer"
+                },
+                "hasNext": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Check the request payload for errors.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Unauthorized. Authentication required.",
+            "schema": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact the system administrator.",
+            "schema": {}
+          },
+          "default": {
+            "description": "Default response.",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/api/v1/process-controls/manifest/{flowId}": {
+      "get": {
+        "summary": "Download a proof manifest",
+        "description": "Get the proof manifest document.",
+        "operationId": "DownloadProofManifest",
+        "parameters": [
+          {
+            "name": "flowId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Universally unique identifier of project.",
+            "x-ms-summary": "Universally unique identifier of project"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The manifest document was downloaded successfully.",
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          "400": {
+            "description": "Bad request - Content-type application/json.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication is required to access the resource.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal server error - An unexpected error occurred on the server.",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{id}/download/current": {
+      "get": {
+        "summary": "Download a signed document",
+        "description": "Get the current version of the signed document.",
+        "operationId": "DownloadSignedDocument",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identity of the signed document.",
+            "type": "integer",
+            "format": "int64",
+            "x-ms-summary": "Identity of the signed document"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document downloaded successfully.",
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          "400": {
+            "description": "Bad request - Content-type application/json.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication is required to access the resource.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal server error - An unexpected error occurred on the server.",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/process-controls/project/send-reminder/{flowId}": {
+      "post": {
+        "summary": "Send reminder",
+        "description": "Send a manual reminder to participants who have been invited to a project.",
+        "operationId": "SendReminder",
+        "parameters": [
+          {
+            "name": "flowId",
+            "in": "path",
+            "description": "Universally unique identifier of the flow.",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Universally unique identifier of the flow"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. Reminder was sent successfully.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request. Invalid input parameters.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Authentication is required to access the resource.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal server error. Failed to send reminder.",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/cancel/{id}": {
+      "put": {
+        "summary": "Cancel a project",
+        "description": "Cancel a project, except for projects with a “COMPLETED” status.",
+        "operationId": "CancelProject",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Canceled project identifier.",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "x-ms-summary": "Canceled project identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. Project canceled successfully.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad request. Invalid input parameters.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Authentication is required to access the resource.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal server error. Failed to cancel the project.",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/update/expired/{id}": {
+      "put": {
+        "summary": "Appending expiration date project",
+        "description": "Appending the expiration date project.",
+        "operationId": "ChangeExpirationDate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Identifier of the project to update.",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "x-ms-summary": "Identifier of the project to update"
+          },
+          {
+            "name": "expireDate",
+            "in": "query",
+            "description": "The new expiration date of the project, in YYYY-MM-DD format.",
+            "required": true,
+            "type": "string",
+            "format": "date",
+            "x-ms-summary": "The new expiration date of the project, in YYYY-MM-DD format"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. Expiration date changed successfully.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad request. Invalid input parameters.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Authentication is required to access the resource.",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal server error. Failed to change the expiration date.",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-ms-connector-metadata": [
+    {
+      "propertyName": "Website",
+      "propertyValue": "http://www.certigna.com"
+    },
+    {
+      "propertyName": "Privacy policy",
+      "propertyValue": "http://www.certigna.com/privacy-policy"
+    },
+    {
+      "propertyName": "Categories",
+      "propertyValue": "Website"
+    }
+  ],
+  "definitions": {},
+  "parameters": {},
+  "responses": {},
+  "securityDefinitions": {},
+  "security": [],
+  "tags": []
+}
